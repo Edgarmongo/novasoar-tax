@@ -42,10 +42,10 @@ pipeline {
         stage('5. 拉取配置并部署到 Kubernetes') {
             steps {
                 script {
-                    // 清理旧的配置目录（如果存在）
+                    // 清理旧的配置目录
                     sh 'rm -rf noval-helm'
                     
-                    // 使用 HTTPS 凭证安全克隆配置仓库
+                    // 1. 克隆配置仓库
                     checkout([$class: 'GitSCM',
                         branches: [[name: 'main']],
                         userRemoteConfigs: [[
@@ -54,10 +54,13 @@ pipeline {
                         ]]
                     ])
                     
-                    // 替换 yaml 文件中的镜像版本号
+                    // 2. 打印当前目录确认文件是否存在，方便排查
+                    sh 'pwd && ls -la noval-helm/novasoar-tax/'
+                    
+                    // 3. 替换 yaml 文件中的镜像版本号
                     sh "sed -i 's#__IMAGE_TAG__#${BUILD_NUMBER}#g' noval-helm/novasoar-tax/novasoar-tax-deploy.yaml"
                     
-                    // 执行 K8s 部署
+                    // 4. 执行 K8s 部署
                     sh 'kubectl apply -f noval-helm/novasoar-tax/novasoar-tax-deploy.yaml'
                 }
             }
