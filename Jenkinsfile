@@ -4,13 +4,16 @@ pipeline {
         maven 'Maven-3.8.novalsoar'
     }
     stages {
-        stage('1. 拉取代码') {
+       stage('1. 拉取代码') {
             steps {
+                // 先彻底清空当前工作空间，防止残留文件导致非 Git 目录错误
+                cleanWs()
+                
                 checkout([$class: 'GitSCM',
                     branches: [[name: 'main']],
                     userRemoteConfigs: [[
                         url: 'git@github.com:Edgarmongo/novasoar-tax.git',
-                        credentialsId: 'github-ssh-cred'
+                        credentialsId: 'github-ssh-cred' // 确认这里的凭证如果是 SSH 就用 ssh-cred，如果是之前换的 HTTPS 也可以对应修改
                     ]]
                 ])
             }
