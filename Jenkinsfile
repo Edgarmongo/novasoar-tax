@@ -49,7 +49,7 @@ pipeline {
                     checkout([$class: 'GitSCM',
                         branches: [[name: 'main']],
                         userRemoteConfigs: [[
-                            url: 'https://github.com/Edgarmongo/noval-helm.git',
+                            url: 'git@github.com:Edgarmongo/noval-helm.git',
                             credentialsId: 'github-https-cred' // 替换为你自己在 Jenkins 中配置的 GitHub HTTPS 凭证 ID（存有你的 GitHub Token 或账号密码）
                         ]]
                     ])
