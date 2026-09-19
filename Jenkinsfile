@@ -6,9 +6,15 @@ pipeline {
     stages {
         stage('1. 拉取代码') {
             steps {
-                // 请将 URL 替换为你真实的 GitHub 仓库地址
-                git branch: 'main', url: 'https://github.com/Edgarmongo/novasoar-tax.git'
-            }
+				// 使用 withCredentials 或者直接在 git 步骤中指定 credentialsId
+				checkout([$class: 'GitSCM',
+					branches: [[name: 'main']],
+					userRemoteConfigs: [[
+						url: 'https://github.com/Edgarmongo/novasoar-tax.git',
+						credentialsId: 'github-cred' // 对应你在 Jenkins 里填写的凭证 ID
+					]]
+				])
+			}
         }
         stage('2. Maven 编译打包') {
             steps {
@@ -34,4 +40,3 @@ pipeline {
         }
     }
 }
-
