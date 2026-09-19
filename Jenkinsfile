@@ -45,12 +45,12 @@ pipeline {
                     // 清理旧的配置目录（如果存在）
                     sh 'rm -rf noval-helm'
                     
-                    // 【方案二修改点】使用 HTTPS 地址，并通过 Jenkins 凭证安全拉取
+                    // 使用 HTTPS 凭证安全克隆配置仓库
                     checkout([$class: 'GitSCM',
                         branches: [[name: 'main']],
                         userRemoteConfigs: [[
-                            url: 'git@github.com:Edgarmongo/noval-helm.git',
-                            credentialsId: 'github-https-cred' // 替换为你自己在 Jenkins 中配置的 GitHub HTTPS 凭证 ID（存有你的 GitHub Token 或账号密码）
+                            url: 'https://github.com/Edgarmongo/noval-helm.git',
+                            credentialsId: 'github-https-cred'
                         ]]
                     ])
                     
