@@ -11,7 +11,7 @@ pipeline {
                     branches: [[name: 'main']],
                     userRemoteConfigs: [[
                         url: 'git@github.com:Edgarmongo/novasoar-tax.git',
-                        credentialsId: 'github-cred' // 对应你在 Jenkins 里填写的 GitHub 凭证 ID
+                        credentialsId: 'github-ssh-cred' // 对应你在 Jenkins 里填写的 GitHub 凭证 ID
                     ]]
                 ])
             }
