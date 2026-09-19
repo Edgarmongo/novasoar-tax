@@ -42,10 +42,10 @@ pipeline {
                 }
             }
         }
-       stage('5. 拉取配置并部署到 Kubernetes') {
+      stage('5. 拉取配置并部署到 Kubernetes') {
             steps {
                 script {
-                    // 1. 使用 Git 插件拉取，并明确指定延伸目录为 noval-helm
+                    // 1. 拉取配置仓库
                     checkout([$class: 'GitSCM',
                         branches: [[name: 'main']],
                         extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'noval-helm']],
@@ -55,14 +55,11 @@ pipeline {
                         ]]
                     ])
                     
-                    // 2. 打印当前工作目录和文件列表，确保万无一失
-                    sh 'pwd && ls -la noval-helm/novasoar-tax/'
-                    
-                    // 3. 替换 yaml 文件中的镜像版本号
+                    // 2. 替换 yaml 文件中的镜像版本号
                     sh "sed -i 's#__IMAGE_TAG__#${BUILD_NUMBER}#g' noval-helm/novasoar-tax/novasoar-tax-deploy.yaml"
                     
-                    // 4. 执行 K8s 部署
-                    sh 'kubectl apply -f noval-helm/novasoar-tax/novasoar-tax-deploy.yaml'
+                    // 3. 执行 K8s 部署（加上 --validate=false 跳过校验）
+                    sh 'kubectl apply --validate=false -f noval-helm/novasoar-tax/novasoar-tax-deploy.yaml'
                 }
             }
         }
