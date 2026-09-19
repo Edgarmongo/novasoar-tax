@@ -39,22 +39,20 @@ pipeline {
                 }
             }
         }
-        stage('5. 拉取配置并部署到 Kubernetes') {
+       stage('5. 拉取配置并部署到 Kubernetes') {
             steps {
                 script {
-                    // 清理旧的配置目录
-                    sh 'rm -rf noval-helm'
-                    
-                    // 1. 克隆配置仓库
+                    // 1. 使用 Git 插件拉取，并明确指定延伸目录为 noval-helm
                     checkout([$class: 'GitSCM',
                         branches: [[name: 'main']],
+                        extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'noval-helm']],
                         userRemoteConfigs: [[
                             url: 'https://github.com/Edgarmongo/noval-helm.git',
                             credentialsId: 'github-https-cred'
                         ]]
                     ])
                     
-                    // 2. 打印当前目录确认文件是否存在，方便排查
+                    // 2. 打印当前工作目录和文件列表，确保万无一失
                     sh 'pwd && ls -la noval-helm/novasoar-tax/'
                     
                     // 3. 替换 yaml 文件中的镜像版本号
